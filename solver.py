@@ -86,6 +86,8 @@ down = ['y', 'y', 'y', 'y', 'y', 'y', 'y', 'y']
 
 printCube()
 
+#skjdfhskdjf
+
 for i in range(0, 20):
     a = random.randint(1, 6)
     b = random.randint(0, 1)
