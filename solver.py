@@ -25,11 +25,11 @@ def printCube():
 
 
 def printLine(side, numberOfLine, a, ending):
-    if (numberOfLine == 1):
+    if numberOfLine == 1:
         print(" " * a * 2 + side[0] + " " + side[1] + " " + side[2], end=ending)
-    if (numberOfLine == 2):
+    if numberOfLine == 2:
         print(" " * a * 2 + side[7] + "   " + side[3], end=ending)
-    if (numberOfLine == 3):
+    if numberOfLine == 3:
         print(" " * a * 2 + side[6] + " " + side[5] + " " + side[4], end=ending)
 
 
@@ -88,67 +88,67 @@ printCube()
 
 #skjd
 
-for i in range(0, 20):
-    a = random.randint(1, 6)
-    b = random.randint(0, 1)
-    direction = True
-    if b == 1:
-        direction = False
-
-    if a == 1:
-        F(direction)
-    elif a == 2:
-        R(direction)
-    elif a == 3:
-        L(direction)
-    elif a == 4:
-        B(direction)
-    elif a == 5:
-        U(direction)
-    elif a == 6:
-        D(direction)
+# for i in range(0, 20):
+#     a = random.randint(1, 6)
+#     b = random.randint(0, 1)
+#     direction = True
+#     if b == 1:
+#         direction = False
+#
+#     if a == 1:
+#         F(direction)
+#     elif a == 2:
+#         R(direction)
+#     elif a == 3:
+#         L(direction)
+#     elif a == 4:
+#         B(direction)
+#     elif a == 5:
+#         U(direction)
+#     elif a == 6:
+#         D(direction)
 
 printCube()
 x = 0
 
 
-win = Tk()
-win.geometry("400x400")
-c = Canvas(win, width = 400, height = 400)
-c.pack()
-
-oval = c.create_oval(0, 0, 100, 100, fill="#FF0000")
-c.move(oval, 200, 200)
-win.mainloop()
-
-
-# while x != '0':
-#     x = input()
-#     if x == 'r':
-#         R()
-#     elif x == "rp":
-#         R(False)
-#     elif x == 'l':
-#         L()
-#     elif x == "lp":
-#         L(False)
-#     elif x == 'u':
-#         U()
-#     elif x == "up":
-#         U(False)
-#     elif x == 'd':
-#         D()
-#     elif x == "dp":
-#         D(False)
-#     elif x == 'f':
-#         F()
-#     elif x == "fp":
-#         F(False)
-#     elif x == 'b':
-#         B()
-#     elif x == "bp":
-#         B(False)
+# win = Tk()
+# win.geometry("400x400")
+# c = Canvas(win, width = 400, height = 400)
+# c.pack()
 #
-#     printCube()
+# oval = c.create_oval(0, 0, 100, 100, fill="#FF0000")
+# c.move(oval, 200, 200)
+# win.mainloop()
+
+
+while x != '0':
+    x = input()
+    if x == 'r':
+        R()
+    elif x == "rp":
+        R(False)
+    elif x == 'l':
+        L()
+    elif x == "lp":
+        L(False)
+    elif x == 'u':
+        U()
+    elif x == "up":
+        U(False)
+    elif x == 'd':
+        D()
+    elif x == "dp":
+        D(False)
+    elif x == 'f':
+        F()
+    elif x == "fp":
+        F(False)
+    elif x == 'b':
+        B()
+    elif x == "bp":
+        B(False)
+
+    printCube()
 
 

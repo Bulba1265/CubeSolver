@@ -46,6 +46,13 @@ params = {
 projected_points = [j for j in range(len(points))]
 rotated = [0 for _ in range(len(points))]
 
+front = ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+right = ['r', 'r', 'r', 'r', 'r', 'r', 'r', 'r']
+left = ['o', 'o', 'o', 'o', 'o', 'o', 'o', 'o']
+back = ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b']
+up = ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w']
+down = ['y', 'y', 'y', 'y', 'y', 'y', 'y', 'y']
+
 
 def matrix_multiplication(a, b):
     columns_a = len(a[0])
@@ -66,6 +73,56 @@ def matrix_multiplication(a, b):
     else:
         print("columns of the first matrix must be equal to the rows of the second matrix")
         return None
+
+
+def turn(side0, side1, side2, side3, side4, index1, index2, index3, index4, direction):
+    if direction == False:
+        side2, side4 = side4, side2
+        index2, index4 = index4, index2
+        temp = side0.pop(0)
+        side0.insert(7, temp)
+        temp = side0.pop(0)
+        side0.insert(7, temp)
+    else:
+        temp = side0.pop(7)
+        side0.insert(0, temp)
+        temp = side0.pop(7)
+        side0.insert(0, temp)
+
+    for i in range(1, 4):
+        temp = side1[index1]
+        side1[index1] = side4[index4]
+        side4[index4] = side3[index3]
+        side3[index3] = side2[index2]
+        side2[index2] = temp
+        index1 -= 1
+        index2 -= 1
+        index3 -= 1
+        index4 -= 1
+
+
+def F(direction=True):
+    turn(front, up, right, down, left, 6, 0, 2, 4, direction)
+
+
+def R(direction=True):
+    turn(right, up, back, down, front, 4, 0, 4, 4,  direction)
+
+
+def L(direction=True):
+    turn(left, up, front, down, back, 0, 0, 0, 4, direction)
+
+
+def B(direction=True):
+    turn(back, up, left, down, right, 2, 0, 6, 4, direction)
+
+
+def U(direction=True):
+    turn(up, back, right, front, left, 2, 2, 2, 2, direction)
+
+
+def D(direction=True):
+    turn(down, front, right, back, left, 6, 6, 6, 6, direction)
 
 
 def connect_point(i, j, k):
@@ -89,7 +146,7 @@ def sort_tuples(tab):
     return tab
 
 
-def draw_polygon(color, cords):
+def draw_polygon(color, cords, colors):
     pygame.draw.polygon(screen, color, cords)
     corners = [[0, 0] for _ in range(16)]
     corners[0] = [cords[0][0], cords[0][1]]
@@ -125,6 +182,8 @@ def draw_polygon(color, cords):
         y -= dy
         corners[i+1] = [x, y]
 
+
+
     faces = []
     # it = 0
     # for i in range(3):
@@ -142,8 +201,32 @@ def draw_polygon(color, cords):
     faces += [[corners[4], corners[5], corners[9], corners[8]]]
     faces += [[corners[5], corners[6], corners[10], corners[9]]]
 
-    pygame.draw.polygon(screen, (50, 50, 203), (faces[0][0], faces[0][1], faces[0][2], faces[0][3]))
+    for i in range(8):
+        c = (0, 0, 0)
+        if colors[i] == 'w':
+            c = white
+        elif colors[i] == 'g':
+            c = green
+        elif colors[i] == 'r':
+            c = red
+        elif colors[i] == 'b':
+            c = blue
+        elif colors[i] == 'o':
+            c = orange
+        elif colors[i] == 'y':
+            c = yellow
 
+        pygame.draw.polygon(screen, c, (faces[i][0], faces[i][1], faces[i][2], faces[i][3]))
+
+    pygame.draw.line(screen, black, (corners[8][0], corners[8][1]), (corners[11][0], corners[11][1]), 3)
+    pygame.draw.line(screen, black, (corners[4][0], corners[4][1]), (corners[7][0], corners[7][1]), 3)
+    pygame.draw.line(screen, black, (corners[1][0], corners[1][1]), (corners[13][0], corners[13][1]), 3)
+    pygame.draw.line(screen, black, (corners[2][0], corners[2][1]), (corners[14][0], corners[14][1]), 3)
+
+    pygame.draw.line(screen, black, (corners[0][0], corners[0][1]), (corners[3][0], corners[3][1]), 3)
+    pygame.draw.line(screen, black, (corners[3][0], corners[3][1]), (corners[15][0], corners[15][1]), 3)
+    pygame.draw.line(screen, black, (corners[15][0], corners[15][1]), (corners[12][0], corners[12][1]), 3)
+    pygame.draw.line(screen, black, (corners[12][0], corners[12][1]), (corners[0][0], corners[0][1]), 3)
 
 def rotate_cube():
     index = 0
@@ -239,17 +322,17 @@ while run:
     for i in range(6):
         temp = distances[i][0]
         if temp == 0:
-            draw_polygon(white, white_side)
+            draw_polygon(white, white_side, up)
         elif temp == 1:
-            draw_polygon(green, green_side)
+            draw_polygon(green, green_side, front)
         elif temp == 2:
-            draw_polygon(red, red_side)
+            draw_polygon(red, red_side, right)
         elif temp == 3:
-            draw_polygon(blue, blue_side)
+            draw_polygon(blue, blue_side, back)
         elif temp == 4:
-            draw_polygon(orange, orange_side)
+            draw_polygon(orange, orange_side, left)
         elif temp == 5:
-            draw_polygon(yellow, yellow_side)
+            draw_polygon(yellow, yellow_side, down)
 
     angle += speed
     pygame.display.update()
