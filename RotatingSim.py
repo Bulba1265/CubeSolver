@@ -17,9 +17,9 @@ def ay_change(value):
 
 def get_position(x, y, z):
     angle = numpy.arctan2(y, x)
-    #print(numpy.rad2deg(angle), y, x)
+    # print(numpy.rad2deg(angle), y, x)
     r = math.sqrt(pow(x, 2)+pow(y, 2))
-    #print(r)
+    # print(r)
     xt, yt = transform_coordinates(angle, r, z)
     return xt, yt
 
@@ -43,9 +43,12 @@ def get_depth(angle, r, h):
     depth = number - number2
     return depth
 
-def draw_cube():
-    canvas.delete("all")
 
+def draw_cube():
+    global ax, ay
+    # ax += 0.01
+    # ay += 0.01
+    canvas.delete("all")
     vertexes = [(0, 0) for i in range(0, 8)]
     vertexes[0] = draw_point(1, 1, 1)
     vertexes[1] = draw_point(1, -1, 1)
@@ -71,16 +74,14 @@ def draw_cube():
     draw_line(vertexes[6][0], vertexes[6][1], vertexes[7][0], vertexes[7][1])
     draw_line(vertexes[7][0], vertexes[7][1], vertexes[4][0], vertexes[4][1])
 
-    # draw_side(vertexes[0], vertexes[1], vertexes[2], vertexes[3], "green")
-    # draw_side(vertexes[0], vertexes[1], vertexes[5], vertexes[4], "orange")
-    # draw_side(vertexes[1], vertexes[2], vertexes[6], vertexes[5], "red")
-    # draw_side(vertexes[2], vertexes[3], vertexes[7], vertexes[6], "blue")
-    # draw_side(vertexes[3], vertexes[0], vertexes[4], vertexes[7], "yellow")
-    # draw_side(vertexes[4], vertexes[5], vertexes[6], vertexes[7], "white")
-
-
-    if ay > -10:
-        window.after(60, draw_cube)
+    draw_side(vertexes[1], vertexes[2], vertexes[6], vertexes[5], "blue")
+    draw_side(vertexes[0], vertexes[1], vertexes[2], vertexes[3], "yellow")
+    draw_side(vertexes[0], vertexes[1], vertexes[5], vertexes[4], "red")
+    draw_side(vertexes[4], vertexes[5], vertexes[6], vertexes[7], "white")
+    draw_side(vertexes[2], vertexes[3], vertexes[7], vertexes[6], "orange")
+    draw_side(vertexes[3], vertexes[0], vertexes[4], vertexes[7], "green")
+    # if ay > -10:
+    window.after(60, draw_cube)
 
 
 def draw_point(x, y, z):
@@ -95,12 +96,14 @@ def draw_point(x, y, z):
 def draw_line(x1, y1, x2, y2):
     canvas.create_line(x1, y1, x2, y2, fill="#FFFFFF", width=5)
 
+
 def draw_side(v1, v2, v3, v4, color):
     canvas.create_polygon(v1[0], v1[1], v2[0], v2[1], v3[0], v3[1], v4[0], v4[1], fill=color)
 
+
 window = Tk()
 window.resizable(False, False)
-window.title("Rotiting Cube")
+window.title("Rotating Cube")
 
 label_x = Label(text="X", font=("Courier", 20), fg='#73B5FA', justify=CENTER)
 label_x.grid(column=0, row=0)
@@ -130,10 +133,11 @@ y_temp = int((screen_height/2)-(window_height/2))
 #print(window_width, window_height, x, y, screen_width, screen_height)
 window.geometry(f"{window_width}x{window_height}+{x_temp}+{y_temp}")
 
+# pseudo camera (0, 10, 0)
 last_ax_value = 0
 last_ay_value = 0
-ax = 1
-ay = 1
+ax = 0
+ay = 0
 d = 7
 x = 0
 y = 0

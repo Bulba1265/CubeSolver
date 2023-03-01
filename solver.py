@@ -120,7 +120,6 @@ c.pack()
 oval = c.create_oval(0, 0, 100, 100, fill="#FF0000")
 c.move(oval, 200, 200)
 win.mainloop()
-#siema
 
 
 # while x != '0':
