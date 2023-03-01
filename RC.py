@@ -14,6 +14,7 @@ width, height = 800, 800
 pygame.init()
 pygame.display.set_caption("3D cube Projection")
 screen = pygame.display.set_mode((width, height))
+gui_font = pygame.font.Font(None, 30)
 clock = pygame.time.Clock()
 fps = 60
 
@@ -52,6 +53,34 @@ left = ['o', 'o', 'o', 'o', 'o', 'o', 'o', 'o']
 back = ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b']
 up = ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w']
 down = ['y', 'y', 'y', 'y', 'y', 'y', 'y', 'y']
+
+
+class Button:
+    def __init__(self, text, w, h, pos):
+        self.top_rect = pygame.Rect(pos, (w, h))
+        self.top_color = '#475F77'
+
+        self.text_surf = gui_font.render(text, True, '#FFFFFF')
+        self.text_rect = self.text_surf.get_rect(center=self.top_rect.center)
+
+        self.pressed = False
+
+    def draw(self):
+        pygame.draw.rect(screen, self.top_color, self.top_rect, border_radius=10)
+        screen.blit(self.text_surf, self.text_rect)
+        return self.check_click()
+
+    def check_click(self):
+        action = False
+        mouse_pos = pygame.mouse.get_pos()
+        if self.top_rect.collidepoint(mouse_pos):
+            if pygame.mouse.get_pressed()[0] == 1 and not self.pressed:
+                self.pressed = True
+                action = True
+        if pygame.mouse.get_pressed()[0] == 0:
+            self.pressed = False
+        return action
+
 
 
 def matrix_multiplication(a, b):
@@ -182,8 +211,6 @@ def draw_polygon(color, cords, colors):
         y -= dy
         corners[i+1] = [x, y]
 
-
-
     faces = []
     # it = 0
     # for i in range(3):
@@ -228,6 +255,7 @@ def draw_polygon(color, cords, colors):
     pygame.draw.line(screen, black, (corners[15][0], corners[15][1]), (corners[12][0], corners[12][1]), 3)
     pygame.draw.line(screen, black, (corners[12][0], corners[12][1]), (corners[0][0], corners[0][1]), 3)
 
+
 def rotate_cube():
     index = 0
     rotation_x = [[1, 0, 0],
@@ -267,6 +295,19 @@ def keys_handler(keys):
     rotate_cube()
 
 
+R_move = Button('R', 40, 40, (10, 10))
+Rp_move = Button('R\'', 40, 40, (60, 10))
+L_move = Button('L', 40, 40, (10, 60))
+Lp_move = Button('L\'', 40, 40, (60, 60))
+U_move = Button('U', 40, 40, (10, 110))
+Up_move = Button('U\'', 40, 40, (60, 110))
+D_move = Button('D', 40, 40, (10, 160))
+Dp_move = Button('D\'', 40, 40, (60, 160))
+F_move = Button('F', 40, 40, (10, 210))
+Fp_move = Button('F\'', 40, 40, (60, 210))
+B_move = Button('B', 40, 40, (10, 260))
+Bp_move = Button('B\'', 40, 40, (60, 260))
+
 run = True
 while run:
     clock.tick(fps)
@@ -281,6 +322,30 @@ while run:
     #     connect_point(m, (m+1)%4, projected_points)
     #     connect_point(m+4, (m+1)%4 + 4, projected_points)
     #     connect_point(m, m+4, projected_points)
+    if R_move.draw():
+        R()
+    if Rp_move.draw():
+        R(False)
+    if L_move.draw():
+        L()
+    if Lp_move.draw():
+        L(False)
+    if U_move.draw():
+        U()
+    if Up_move.draw():
+        U(False)
+    if D_move.draw():
+        D()
+    if Dp_move.draw():
+        D(False)
+    if F_move.draw():
+        F()
+    if Fp_move.draw():
+        F(False)
+    if B_move.draw():
+        B()
+    if Bp_move.draw():
+        B(False)
 
     middles = [[i, (0, 0, 0)] for i in range(6)]
     middles[0][1] = ((rotated[1][0] + rotated[4][0]) / 2, (rotated[1][1] + rotated[4][1]) / 2, (rotated[1][2] + rotated[4][2]) / 2)
