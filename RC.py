@@ -47,12 +47,12 @@ params = {
 projected_points = [j for j in range(len(points))]
 rotated = [0 for _ in range(len(points))]
 
-front = ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-right = ['r', 'r', 'r', 'r', 'r', 'r', 'r', 'r']
-left = ['o', 'o', 'o', 'o', 'o', 'o', 'o', 'o']
-back = ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b']
-up = ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w']
-down = ['y', 'y', 'y', 'y', 'y', 'y', 'y', 'y']
+front = ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+right = ['r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r']
+left = ['o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o']
+back = ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b']
+up = ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w']
+down = ['y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y']
 
 
 class Button:
@@ -82,7 +82,6 @@ class Button:
         return action
 
 
-
 def matrix_multiplication(a, b):
     columns_a = len(a[0])
     rows_a = len(a)
@@ -105,7 +104,7 @@ def matrix_multiplication(a, b):
 
 
 def turn(side0, side1, side2, side3, side4, index1, index2, index3, index4, direction):
-    if direction == False:
+    if not direction:
         side2, side4 = side4, side2
         index2, index4 = index4, index2
         temp = side0.pop(0)
@@ -128,6 +127,14 @@ def turn(side0, side1, side2, side3, side4, index1, index2, index3, index4, dire
         index2 -= 1
         index3 -= 1
         index4 -= 1
+        if index1 == -1:
+            index1 -= 1
+        if index2 == -1:
+            index2 -= 1
+        if index3 == -1:
+            index3 -= 1
+        if index4 == -1:
+            index4 -= 1
 
 
 def F(direction=True):
@@ -154,6 +161,67 @@ def D(direction=True):
     turn(down, front, right, back, left, 6, 6, 6, 6, direction)
 
 
+def y_rotate_cube():
+    global front, right, left, back, up, down
+    temp = up.pop(7)
+    up.insert(0, temp)
+    temp = up.pop(7)
+    up.insert(0, temp)
+
+    temp = down.pop(0)
+    down.insert(7, temp)
+    temp = down.pop(0)
+    down.insert(7, temp)
+
+    temp = front
+    front = right
+    right = back
+    back = left
+    left = temp
+
+
+def yp_rotate_cube():
+    global front, right, left, back, up, down
+    temp = up.pop(0)
+    up.insert(7, temp)
+    temp = up.pop(0)
+    up.insert(7, temp)
+
+    temp = down.pop(7)
+    down.insert(0, temp)
+    temp = down.pop(7)
+    down.insert(0, temp)
+
+    temp = front
+    front = left
+    left = back
+    back = right
+    right = temp
+
+
+def x_rotate_cube():
+    global front, right, left, back, up, down
+    temp = right.pop(7)
+    right.insert(0, temp)
+    temp = right.pop(7)
+    right.insert(0, temp)
+
+    temp = left.pop(0)
+    left.insert(7, temp)
+    temp = left.pop(0)
+    left.insert(7, temp)
+
+    temp = front
+    front = down
+    down = back
+    back = up
+    up = temp
+
+
+def xp_rotate_cube():
+    pass
+
+
 def connect_point(i, j, k):
     a = k[i]
     b = k[j]
@@ -176,7 +244,7 @@ def sort_tuples(tab):
 
 
 def draw_polygon(color, cords, colors):
-    pygame.draw.polygon(screen, color, cords)
+    # pygame.draw.polygon(screen, color, cords)
     corners = [[0, 0] for _ in range(16)]
     corners[0] = [cords[0][0], cords[0][1]]
     corners[3] = [cords[1][0], cords[1][1]]
@@ -228,7 +296,7 @@ def draw_polygon(color, cords, colors):
     faces += [[corners[4], corners[5], corners[9], corners[8]]]
     faces += [[corners[5], corners[6], corners[10], corners[9]]]
 
-    for i in range(8):
+    for i in range(9):
         c = (0, 0, 0)
         if colors[i] == 'w':
             c = white
@@ -307,6 +375,10 @@ F_move = Button('F', 40, 40, (10, 210))
 Fp_move = Button('F\'', 40, 40, (60, 210))
 B_move = Button('B', 40, 40, (10, 260))
 Bp_move = Button('B\'', 40, 40, (60, 260))
+y_rotate = Button('y', 40, 40, (10, 310))
+yp_rotate = Button('y\'', 40, 40, (60, 310))
+x_rotate = Button('x', 40, 40, (10, 360))
+xp_rotate = Button('x\'', 40, 40, (60, 360))
 
 run = True
 while run:
@@ -346,6 +418,14 @@ while run:
         B()
     if Bp_move.draw():
         B(False)
+    if y_rotate.draw():
+        y_rotate_cube()
+    if yp_rotate.draw():
+        yp_rotate_cube()
+    if x_rotate.draw():
+        x_rotate_cube()
+    if xp_rotate.draw():
+        xp_rotate_cube()
 
     middles = [[i, (0, 0, 0)] for i in range(6)]
     middles[0][1] = ((rotated[1][0] + rotated[4][0]) / 2, (rotated[1][1] + rotated[4][1]) / 2, (rotated[1][2] + rotated[4][2]) / 2)

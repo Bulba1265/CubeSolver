@@ -34,7 +34,7 @@ def printLine(side, numberOfLine, a, ending):
 
 
 def turn(side0, side1, side2, side3, side4, index1, index2, index3, index4, direction):
-    if direction == False:
+    if not direction:
         side2, side4 = side4, side2
         index2, index4 = index4, index2
         temp = side0.pop(0)
@@ -58,20 +58,26 @@ def turn(side0, side1, side2, side3, side4, index1, index2, index3, index4, dire
         index3 -= 1
         index4 -= 1
 
+
 def F(direction = True):
     turn(front, up, right, down, left, 6, 0, 2, 4, direction)
+
 
 def R(direction = True):
     turn(right, up, back, down, front, 4, 0, 4, 4,  direction)
 
+
 def L(direction = True):
     turn(left, up, front, down, back, 0, 0, 0, 4, direction)
+
 
 def B(direction = True):
     turn(back, up, left, down, right, 2, 0, 6, 4, direction)
 
+
 def U(direction = True):
     turn(up, back, right, front, left, 2, 2, 2, 2, direction)
+
 
 def D(direction = True):
     turn(down, front, right, back, left, 6, 6, 6, 6, direction)
