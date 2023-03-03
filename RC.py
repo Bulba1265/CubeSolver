@@ -2,6 +2,8 @@ import pygame
 from pygame import K_q, K_w, K_a, K_s, K_z, K_x
 import os
 import math
+import random
+import time
 
 os.environ["SDL_VIDEO_CENTERED"]='1'
 black, white, blue = (20, 20, 20), (255, 255, 255), (0, 0, 255)
@@ -214,12 +216,39 @@ def x_rotate_cube():
     temp = front
     front = down
     down = back
+    for i in range(4):
+        t = down.pop(7)
+        down.insert(0, t)
     back = up
+    for i in range(4):
+        t = back.pop(0)
+        back.insert(7, t)
     up = temp
 
 
 def xp_rotate_cube():
-    pass
+    global front, right, left, back, up, down
+    temp = right.pop(0)
+    right.insert(7, temp)
+    temp = right.pop(0)
+    right.insert(7, temp)
+
+    temp = left.pop(7)
+    left.insert(0, temp)
+    temp = left.pop(7)
+    left.insert(0, temp)
+
+    temp = front
+    front = up
+    up = back
+    for i in range(4):
+        t = up.pop(7)
+        up.insert(0, t)
+    back = down
+    for i in range(4):
+        t = back.pop(0)
+        back.insert(7, t)
+    down = temp
 
 
 def connect_point(i, j, k):
@@ -363,77 +392,20 @@ def keys_handler(keys):
     rotate_cube()
 
 
-R_move = Button('R', 40, 40, (10, 10))
-Rp_move = Button('R\'', 40, 40, (60, 10))
-L_move = Button('L', 40, 40, (10, 60))
-Lp_move = Button('L\'', 40, 40, (60, 60))
-U_move = Button('U', 40, 40, (10, 110))
-Up_move = Button('U\'', 40, 40, (60, 110))
-D_move = Button('D', 40, 40, (10, 160))
-Dp_move = Button('D\'', 40, 40, (60, 160))
-F_move = Button('F', 40, 40, (10, 210))
-Fp_move = Button('F\'', 40, 40, (60, 210))
-B_move = Button('B', 40, 40, (10, 260))
-Bp_move = Button('B\'', 40, 40, (60, 260))
-y_rotate = Button('y', 40, 40, (10, 310))
-yp_rotate = Button('y\'', 40, 40, (60, 310))
-x_rotate = Button('x', 40, 40, (10, 360))
-xp_rotate = Button('x\'', 40, 40, (60, 360))
-
-run = True
-while run:
-    clock.tick(fps)
-    screen.fill((230, 230, 230))
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-    keys_handler(pygame.key.get_pressed())
-
-    #draw edges
-    # for m in range(4):
-    #     connect_point(m, (m+1)%4, projected_points)
-    #     connect_point(m+4, (m+1)%4 + 4, projected_points)
-    #     connect_point(m, m+4, projected_points)
-    if R_move.draw():
-        R()
-    if Rp_move.draw():
-        R(False)
-    if L_move.draw():
-        L()
-    if Lp_move.draw():
-        L(False)
-    if U_move.draw():
-        U()
-    if Up_move.draw():
-        U(False)
-    if D_move.draw():
-        D()
-    if Dp_move.draw():
-        D(False)
-    if F_move.draw():
-        F()
-    if Fp_move.draw():
-        F(False)
-    if B_move.draw():
-        B()
-    if Bp_move.draw():
-        B(False)
-    if y_rotate.draw():
-        y_rotate_cube()
-    if yp_rotate.draw():
-        yp_rotate_cube()
-    if x_rotate.draw():
-        x_rotate_cube()
-    if xp_rotate.draw():
-        xp_rotate_cube()
-
+def draw_cube():
     middles = [[i, (0, 0, 0)] for i in range(6)]
-    middles[0][1] = ((rotated[1][0] + rotated[4][0]) / 2, (rotated[1][1] + rotated[4][1]) / 2, (rotated[1][2] + rotated[4][2]) / 2)
-    middles[1][1] = ((rotated[1][0] + rotated[3][0]) / 2, (rotated[1][1] + rotated[3][1]) / 2, (rotated[1][2] + rotated[3][2]) / 2)
-    middles[2][1] = ((rotated[1][0] + rotated[6][0]) / 2, (rotated[1][1] + rotated[6][1]) / 2, (rotated[1][2] + rotated[6][2]) / 2)
-    middles[3][1] = ((rotated[4][0] + rotated[6][0]) / 2, (rotated[4][1] + rotated[6][1]) / 2, (rotated[4][2] + rotated[6][2]) / 2)
-    middles[4][1] = ((rotated[4][0] + rotated[3][0]) / 2, (rotated[4][1] + rotated[3][1]) / 2, (rotated[4][2] + rotated[3][2]) / 2)
-    middles[5][1] = ((rotated[2][0] + rotated[7][0]) / 2, (rotated[2][1] + rotated[7][1]) / 2, (rotated[2][2] + rotated[7][2]) / 2)
+    middles[0][1] = (
+    (rotated[1][0] + rotated[4][0]) / 2, (rotated[1][1] + rotated[4][1]) / 2, (rotated[1][2] + rotated[4][2]) / 2)
+    middles[1][1] = (
+    (rotated[1][0] + rotated[3][0]) / 2, (rotated[1][1] + rotated[3][1]) / 2, (rotated[1][2] + rotated[3][2]) / 2)
+    middles[2][1] = (
+    (rotated[1][0] + rotated[6][0]) / 2, (rotated[1][1] + rotated[6][1]) / 2, (rotated[1][2] + rotated[6][2]) / 2)
+    middles[3][1] = (
+    (rotated[4][0] + rotated[6][0]) / 2, (rotated[4][1] + rotated[6][1]) / 2, (rotated[4][2] + rotated[6][2]) / 2)
+    middles[4][1] = (
+    (rotated[4][0] + rotated[3][0]) / 2, (rotated[4][1] + rotated[3][1]) / 2, (rotated[4][2] + rotated[3][2]) / 2)
+    middles[5][1] = (
+    (rotated[2][0] + rotated[7][0]) / 2, (rotated[2][1] + rotated[7][1]) / 2, (rotated[2][2] + rotated[7][2]) / 2)
 
     distances = [[i, 0] for i in range(6)]
     for i in range(6):
@@ -478,6 +450,366 @@ while run:
             draw_polygon(orange, orange_side, left)
         elif temp == 5:
             draw_polygon(yellow, yellow_side, down)
+
+
+def solve_cube():
+    if up[-1] == 'w':
+        x_rotate_cube()
+        x_rotate_cube()
+    # cross ------------
+    for i in range(3):
+        for i in range(4):
+            if down[1] == 'w':
+                while up[5] == 'w':
+                    U()
+                F()
+                F()
+            D()
+        for i in range(4):
+            while front[1] == 'w':
+                F()
+                U(False)
+                R()
+            while front[3] == 'w':
+                while up[3] == 'w':
+                    U()
+                R()
+            while front[5] == 'w':
+                while up[3] == 'w':
+                    U()
+                F(False)
+                R()
+                F()
+            while front[7] == 'w':
+                while up[7] == 'w':
+                    U()
+                L()
+            y_rotate_cube()
+
+    for i in range(4):
+        while up[5] != 'w' or front[1] != front[8]:
+            U()
+        F()
+        F()
+        y_rotate_cube()
+    # cross done ----------
+
+    # white corners ---------
+    for i in range(4):
+        if front[4] == 'w' or right[6] == 'w' or down[2] == 'w':
+            while front[2] == 'w' or right[0] == 'w' or up[4] == 'w':
+                U()
+            R()
+            U()
+            R(False)
+            U(False)
+        y_rotate_cube()
+
+    for i in range(4):
+        corner_colors = ""
+        center_colors = front[-1] + right[-1]
+        center_colors2 = right[-1] + front[-1]
+
+        while corner_colors != center_colors and corner_colors != center_colors2:
+            U()
+            corner_colors = ""
+            if front[2] != 'w':
+                corner_colors += front[2]
+            if right[0] != 'w':
+                corner_colors += right[0]
+            if up[4] != 'w':
+                corner_colors += up[4]
+        while down[2] != 'w':
+            R()
+            U()
+            R(False)
+            U(False)
+        y_rotate_cube()
+    # white corners done ------------
+
+    # second layer ------
+    for i in range(4):
+        if front[3] != 'y' and right[7] != 'y':
+            while up[3] != 'y' and right[1] != 'y':
+                U()
+            U(False)
+            F(False)
+            U(False)
+            F()
+            U()
+            R()
+            U()
+            R(False)
+        y_rotate_cube()
+
+    for i in range(4):
+        edge_colors = ""
+        center_colors = front[-1] + right[-1]
+        center_colors2 = right[-1] + front[-1]
+        for i in range(4):
+            edge_colors = ""
+            if up[3] != 'y':
+                edge_colors += up[3]
+            if right[1] != 'y':
+                edge_colors += right[1]
+            if edge_colors != center_colors and edge_colors != center_colors2:
+                U()
+        if right[1] == right[-1]:
+            U(False)
+            F(False)
+            U(False)
+            F()
+            U()
+            R()
+            U()
+            R(False)
+        else:
+            U()
+            U()
+            R()
+            U(False)
+            R(False)
+            U(False)
+            F(False)
+            U()
+            F()
+        y_rotate_cube()
+    # second layer done -------
+
+    # yellow cross ------
+    cnt = 0
+    for i in range(4):
+        if up[1] == 'y':
+            cnt += 1
+        U()
+    if cnt == 0:
+        F()
+        R()
+        U()
+        R(False)
+        U(False)
+        F(False)
+        cnt += 2
+    if cnt == 2:
+        while up[5] == 'y' or up[7] != 'y':
+            U()
+        F()
+        R()
+        U()
+        R(False)
+        U(False)
+        F(False)
+        if up[5] != 'y':
+            F()
+            R()
+            U()
+            R(False)
+            U(False)
+            F(False)
+
+    cnt = 0
+    while cnt < 2:
+        U()
+        cnt = 0
+        if front[1] == front[-1]:
+            cnt += 1
+        if right[1] == right[-1]:
+            cnt += 1
+        if back[1] == back[-1]:
+            cnt += 1
+        if left[1] == left[-1]:
+            cnt += 1
+    if cnt == 2:
+        while (right[1] != right[-1] or back[1] != back[-1]) and (right[1] != right[-1] or left[1] != left[-1]):
+            y_rotate_cube()
+        if right[1] == right[-1] and back[1] == back[-1]:
+            R()
+            U()
+            R(False)
+            U()
+            R()
+            U()
+            U()
+            R(False)
+            U()
+        else:
+            R()
+            U()
+            R(False)
+            U()
+            R()
+            U()
+            U()
+            R(False)
+
+            U(False)
+
+            R()
+            U()
+            R(False)
+            U()
+            R()
+            U()
+            U()
+            R(False)
+    # yellow cross done ------
+
+    # yellow corners -------
+    for i in range(4):
+        U()
+        while up[4] != 'y':
+            R(False)
+            D(False)
+            R()
+            D()
+
+    cnt = 0
+    for i in range(4):
+        if front[1] == front[2]:
+            cnt += 1
+        U()
+    if cnt == 0:
+        R(False)
+        F()
+        R(False)
+        B()
+        B()
+        R()
+        F(False)
+        R(False)
+        B()
+        B()
+        R()
+        R()
+        cnt += 1
+    if cnt == 1:
+        while front[0] != front[1]:
+            y_rotate_cube()
+        n = 0
+        if front[2] == back[-1]:
+            n = 1
+        else:
+            n = 2
+        for i in range(n):
+            R(False)
+            F()
+            R(False)
+            B()
+            B()
+            R()
+            F(False)
+            R(False)
+            B()
+            B()
+            R()
+            R()
+    # yellow corners done -------
+    # cube solved!!!!!!!!!!!!!!!!!!!!!!
+
+
+def scramble_cube():
+    for i in range(0, 20):
+        a = random.randint(1, 6)
+        b = random.randint(0, 1)
+        direction = True
+        if b == 1:
+            direction = False
+
+        if a == 1:
+            F(direction)
+        elif a == 2:
+            R(direction)
+        elif a == 3:
+            L(direction)
+        elif a == 4:
+            B(direction)
+        elif a == 5:
+            U(direction)
+        elif a == 6:
+            D(direction)
+
+
+R_move = Button('R', 40, 40, (10, 10))
+Rp_move = Button('R\'', 40, 40, (60, 10))
+L_move = Button('L', 40, 40, (10, 60))
+Lp_move = Button('L\'', 40, 40, (60, 60))
+U_move = Button('U', 40, 40, (10, 110))
+Up_move = Button('U\'', 40, 40, (60, 110))
+D_move = Button('D', 40, 40, (10, 160))
+Dp_move = Button('D\'', 40, 40, (60, 160))
+F_move = Button('F', 40, 40, (10, 210))
+Fp_move = Button('F\'', 40, 40, (60, 210))
+B_move = Button('B', 40, 40, (10, 260))
+Bp_move = Button('B\'', 40, 40, (60, 260))
+y_rotate = Button('y', 40, 40, (10, 310))
+yp_rotate = Button('y\'', 40, 40, (60, 310))
+x_rotate = Button('x', 40, 40, (10, 360))
+xp_rotate = Button('x\'', 40, 40, (60, 360))
+
+solve_button = Button('solve', 100, 40, (350, 10))
+scramble_button = Button('scramble', 100, 40, (350, 60))
+
+scramble_cube()
+
+# for i in range(10000):
+#     solve_cube()
+#     for i in range(8):
+#         if front[i] != front[-1] or right[i] != right[-1] or back[i] != back[-1] or left[i] != left [-1] or down[i] != down[-1]:
+#             print("prawie")
+#     scramble_cube()
+
+run = True
+while run:
+    clock.tick(fps)
+    screen.fill((230, 230, 230))
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+    keys_handler(pygame.key.get_pressed())
+
+    #draw edges
+    # for m in range(4):
+    #     connect_point(m, (m+1)%4, projected_points)
+    #     connect_point(m+4, (m+1)%4 + 4, projected_points)
+    #     connect_point(m, m+4, projected_points)
+    # if R_move.draw():
+    #     R()
+    # if Rp_move.draw():
+    #     R(False)
+    # if L_move.draw():
+    #     L()
+    # if Lp_move.draw():
+    #     L(False)
+    # if U_move.draw():
+    #     U()
+    # if Up_move.draw():
+    #     U(False)
+    # if D_move.draw():
+    #     D()
+    # if Dp_move.draw():
+    #     D(False)
+    # if F_move.draw():
+    #     F()
+    # if Fp_move.draw():
+    #     F(False)
+    # if B_move.draw():
+    #     B()
+    # if Bp_move.draw():
+    #     B(False)
+    # if y_rotate.draw():
+    #     y_rotate_cube()
+    # if yp_rotate.draw():
+    #     yp_rotate_cube()
+    # if x_rotate.draw():
+    #     x_rotate_cube()
+    # if xp_rotate.draw():
+    #     xp_rotate_cube()
+    if solve_button.draw():
+        solve_cube()
+    if scramble_button.draw():
+        scramble_cube()
+
+    draw_cube()
 
     angle += speed
     pygame.display.update()
