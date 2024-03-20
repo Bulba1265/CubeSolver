@@ -138,32 +138,66 @@ def turn(side0, side1, side2, side3, side4, index1, index2, index3, index4, dire
         if index4 == -1:
             index4 -= 1
 
+        #draw_cube()
+
 
 def F(direction=True):
+    global moves
+    if direction:
+        moves += "F "
+    else:
+        moves += "F' "
     turn(front, up, right, down, left, 6, 0, 2, 4, direction)
 
 
 def R(direction=True):
+    global moves
+    if direction:
+        moves += "R "
+    else:
+        moves += "R' "
     turn(right, up, back, down, front, 4, 0, 4, 4,  direction)
 
 
 def L(direction=True):
+    global moves
+    if direction:
+        moves += "L "
+    else:
+        moves += "L' "
     turn(left, up, front, down, back, 0, 0, 0, 4, direction)
 
 
 def B(direction=True):
+    global moves
+    if direction:
+        moves += "B "
+    else:
+        moves += "B' "
     turn(back, up, left, down, right, 2, 0, 6, 4, direction)
 
 
 def U(direction=True):
+    global moves
+    if direction:
+        moves += "U "
+    else:
+        moves += "U' "
     turn(up, back, right, front, left, 2, 2, 2, 2, direction)
 
 
 def D(direction=True):
+    global moves
+    if direction:
+        moves += "D "
+    else:
+        moves += "D' "
     turn(down, front, right, back, left, 6, 6, 6, 6, direction)
 
 
 def y_rotate_cube():
+    global moves
+    moves += "y "
     global front, right, left, back, up, down
     temp = up.pop(7)
     up.insert(0, temp)
@@ -183,6 +217,8 @@ def y_rotate_cube():
 
 
 def yp_rotate_cube():
+    global moves
+    moves += "y' "
     global front, right, left, back, up, down
     temp = up.pop(0)
     up.insert(7, temp)
@@ -202,6 +238,8 @@ def yp_rotate_cube():
 
 
 def x_rotate_cube():
+    global moves
+    moves += "x "
     global front, right, left, back, up, down
     temp = right.pop(7)
     right.insert(0, temp)
@@ -227,6 +265,8 @@ def x_rotate_cube():
 
 
 def xp_rotate_cube():
+    global moves
+    moves += "x' "
     global front, right, left, back, up, down
     temp = right.pop(0)
     right.insert(7, temp)
@@ -453,6 +493,8 @@ def draw_cube():
 
 
 def solve_cube():
+    global moves
+    print("white cross:")
     if up[-1] == 'w':
         x_rotate_cube()
         x_rotate_cube()
@@ -493,7 +535,9 @@ def solve_cube():
         F()
         y_rotate_cube()
     # cross done ----------
-
+    print(simplify_moves(moves))
+    print("white corners:")
+    moves = ""
     # white corners ---------
     for i in range(4):
         if front[4] == 'w' or right[6] == 'w' or down[2] == 'w':
@@ -526,7 +570,9 @@ def solve_cube():
             U(False)
         y_rotate_cube()
     # white corners done ------------
-
+    print(simplify_moves(moves))
+    print("second layer:")
+    moves = ""
     # second layer ------
     for i in range(4):
         if front[3] != 'y' and right[7] != 'y':
@@ -575,7 +621,9 @@ def solve_cube():
             F()
         y_rotate_cube()
     # second layer done -------
-
+    print(simplify_moves(moves))
+    print("yellow cross:")
+    moves = ""
     # yellow cross ------
     cnt = 0
     for i in range(4):
@@ -653,7 +701,9 @@ def solve_cube():
             U()
             R(False)
     # yellow cross done ------
-
+    print(simplify_moves(moves))
+    print("yellow corners:")
+    moves = ""
     # yellow corners -------
     for i in range(4):
         U()
@@ -705,9 +755,37 @@ def solve_cube():
             R()
     # yellow corners done -------
     # cube solved!!!!!!!!!!!!!!!!!!!!!!
+    print(simplify_moves(moves))
+    print("Cube solved!")
+
+
+def simplify_moves(moves):
+    moves_list = moves.split(" ")
+    temp_tab = []
+    last = moves_list[0]
+    result = ""
+    temp_tab += [last]
+    for j in range(1, len(moves_list)):
+        move = moves_list[j]
+        if move == last:
+            temp_tab += [move]
+        else:
+            if len(temp_tab) % 4 != 0:
+                for i in range(len(temp_tab) % 4):
+                    result += temp_tab[i] + " "
+            temp_tab = [move]
+        last = move
+
+    if len(temp_tab) % 4 != 0:
+        for i in range(len(temp_tab) % 4):
+            result += temp_tab[i] + " "
+
+    return result
 
 
 def scramble_cube():
+    global moves
+    moves = ""
     for i in range(0, 20):
         a = random.randint(1, 6)
         b = random.randint(0, 1)
@@ -727,6 +805,9 @@ def scramble_cube():
             U(direction)
         elif a == 6:
             D(direction)
+    print()
+    print("Scrable:")
+    print(moves)
 
 
 R_move = Button('R', 40, 40, (10, 10))
@@ -748,15 +829,10 @@ xp_rotate = Button('x\'', 40, 40, (60, 360))
 
 solve_button = Button('solve', 100, 40, (350, 10))
 scramble_button = Button('scramble', 100, 40, (350, 60))
-
+moves = ""
 scramble_cube()
+moves = ""
 
-# for i in range(10000):
-#     solve_cube()
-#     for i in range(8):
-#         if front[i] != front[-1] or right[i] != right[-1] or back[i] != back[-1] or left[i] != left [-1] or down[i] != down[-1]:
-#             print("prawie")
-#     scramble_cube()
 
 run = True
 while run:
@@ -767,43 +843,38 @@ while run:
             run = False
     keys_handler(pygame.key.get_pressed())
 
-    #draw edges
-    # for m in range(4):
-    #     connect_point(m, (m+1)%4, projected_points)
-    #     connect_point(m+4, (m+1)%4 + 4, projected_points)
-    #     connect_point(m, m+4, projected_points)
-    # if R_move.draw():
-    #     R()
-    # if Rp_move.draw():
-    #     R(False)
-    # if L_move.draw():
-    #     L()
-    # if Lp_move.draw():
-    #     L(False)
-    # if U_move.draw():
-    #     U()
-    # if Up_move.draw():
-    #     U(False)
-    # if D_move.draw():
-    #     D()
-    # if Dp_move.draw():
-    #     D(False)
-    # if F_move.draw():
-    #     F()
-    # if Fp_move.draw():
-    #     F(False)
-    # if B_move.draw():
-    #     B()
-    # if Bp_move.draw():
-    #     B(False)
-    # if y_rotate.draw():
-    #     y_rotate_cube()
-    # if yp_rotate.draw():
-    #     yp_rotate_cube()
-    # if x_rotate.draw():
-    #     x_rotate_cube()
-    # if xp_rotate.draw():
-    #     xp_rotate_cube()
+    if R_move.draw():
+        R()
+    if Rp_move.draw():
+        R(False)
+    if L_move.draw():
+        L()
+    if Lp_move.draw():
+        L(False)
+    if U_move.draw():
+        U()
+    if Up_move.draw():
+        U(False)
+    if D_move.draw():
+        D()
+    if Dp_move.draw():
+        D(False)
+    if F_move.draw():
+        F()
+    if Fp_move.draw():
+        F(False)
+    if B_move.draw():
+        B()
+    if Bp_move.draw():
+        B(False)
+    if y_rotate.draw():
+        y_rotate_cube()
+    if yp_rotate.draw():
+        yp_rotate_cube()
+    if x_rotate.draw():
+        x_rotate_cube()
+    if xp_rotate.draw():
+        xp_rotate_cube()
     if solve_button.draw():
         solve_cube()
     if scramble_button.draw():
